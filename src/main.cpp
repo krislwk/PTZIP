@@ -1,14 +1,17 @@
 #include "crow.h"
+#include <cstdlib>
+#include <stdlib.h>
 
 int main()
 {
-    crow::SimpleApp app; //define your crow application
+    crow::SimpleApp server;
 
-    //define your endpoint at the root directory
-    CROW_ROUTE(app, "/")([](){
-        return "Hello world";
+    const char *HOST = std::getenv("HOST");
+    const int PORT = std::atoi(std::getenv("PORT"));
+
+    CROW_ROUTE(server, "/healthcheck")([](){
+        return "Status: Healthy";
     });
 
-    //set the port, set the app to run on multiple threads, and run the app
-    app.bindaddr("127.0.0.1").port(18080).multithreaded().run();
+    server.bindaddr(HOST).port(PORT).multithreaded().run();
 }
